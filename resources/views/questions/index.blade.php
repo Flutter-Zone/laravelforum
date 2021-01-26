@@ -16,7 +16,7 @@
                                 </h3>
                                 <p class="lead">
                                     Asked by <a href="{{ $question->user->url }}">{{ $question->user->name }}</a>
-                                    <small>{{ $question->created_date }}</small>
+                                    <small class='text-muted'>{{ $question->created_date }}</small>
                                 </p>
                                 {{ \Illuminate\Support\Str::limit($question->body, 250) }}
                             </div>
