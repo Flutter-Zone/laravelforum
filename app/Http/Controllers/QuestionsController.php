@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Question;
-use Illuminate\Http\Request;
 use App\Http\Requests\AskQuestionRequest;
 
 class QuestionsController extends Controller
@@ -17,7 +16,7 @@ class QuestionsController extends Controller
     {
         //
         // \DB::enableQueryLog();
-        $questions = Question::with('user')->latest()->paginate(5);
+        $questions = Question::with('user')->latest()->paginate(10);
 
         return view('questions.index', compact('questions'));
 
@@ -60,7 +59,11 @@ class QuestionsController extends Controller
      */
     public function show(Question $question)
     {
-        //
+        //$question->views = $question->views + 1;
+        $question->increment('views');
+
+        return view('questions.show', compact('question'));
+        
     }
 
     /**
