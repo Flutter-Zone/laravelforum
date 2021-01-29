@@ -25,7 +25,7 @@
                                     <strong>{{ $question->votes }}</strong> {{ \Illuminate\Support\Str::plural('vote', $question->votes) }}
                                 </div>
                                 <div class="status {{ $question->status }}">
-                                    <strong>{{ $question->answers }}</strong> {{ \Illuminate\Support\Str::plural('answer', $question->answers) }}
+                                    <strong>{{ $question->answers_count }}</strong> {{ \Illuminate\Support\Str::plural('answer', $question->answers_count) }}
                                 </div>
                                 <div class="view">
                                     {{ $question->views ." ". \Illuminate\Support\Str::plural('view', $question->views) }}
@@ -35,19 +35,19 @@
                                 <div class="d-flex align-items-center">
                                     <h3 class="mt-0"><a href="{{ $question->url }}">{{ $question->title }}</a></h3>
                                     <div class='ml-auto'>
-                                        @if(Auth::user()->can('update', $question))
+                                        @can('update', $question)
                                         <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-sm btn-outline-info">
                                             Edit
                                         </a>
-                                        @endif
+                                        @endcan
 
-                                        @if(Auth::user()->can('delete', $question))
+                                        @can('delete', $question)
                                         <form class="form-delete" method='POST' action="{{ route('questions.destroy', $question->id) }}">
                                             @method('DELETE')
                                             @csrf
                                             <button type="submit" class="btn btn-outline-danger btn-sm" onClick="return confirm('Are you sure you want to delete question?')">Delete</button>
                                         </form>
-                                        @endif
+                                        @endcan
                                     </div>
                                 </div>
                                 <p class="lead">
