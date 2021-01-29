@@ -11,7 +11,7 @@ class QuestionsController extends Controller
 
     public function __construct(){
         // calling the authentication middleware
-        $this->middleware('auth', ['except' => ['index', 'show ']]);
+        $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
 
