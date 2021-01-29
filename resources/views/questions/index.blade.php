@@ -5,18 +5,18 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="float-left">
-                        <h2>All Questions</h2>
-                    </div>
-                    <div class="float-right">
-                        <a href="{{ route('questions.create') }}" class="btn btn-outline-secondary">
-                            Ask Question
-                        </a>
-                    </div>
-                </div>
-
                 <div class="card-body">
+                    <div class="card-title">
+                        <div class="d-flex align-items-center">
+                            <h2>All Questions</h2>
+                            <div class="ml-auto">
+                                <a href="{{ route('questions.create') }}" class="btn btn-outline-secondary">
+                                    Ask Question
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
                     @include ('layouts._messages')
                     @foreach ($questions as $question)
                         <div class='media'>
