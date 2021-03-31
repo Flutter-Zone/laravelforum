@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
+use App\Question;
+use Illuminate\Http\Request;
 use App\Http\Requests\AskQuestionRequest;
-use Illuminate\Support\Facades\Auth;
 
 class QuestionsController extends Controller
 {
-
-    public function __construct(){
-        // calling the authentication middleware
-        $this->middleware('auth', ['except' => ['index', 'show']]);
-    }
-
-
     /**
      * Display a listing of the resource.
      *
@@ -22,12 +15,13 @@ class QuestionsController extends Controller
      */
     public function index()
     {
-        //
+
+        // Using query log to access database
         // \DB::enableQueryLog();
-        $questions = Question::with('user')->latest()->paginate(10);
-
+        $questions = Question::with('user')->latest()->paginate(5);
         return view('questions.index', compact('questions'));
-
+        // view('questions.index', compact('questions'))->render();
+        // using die and dump
         // dd(\DB::getQueryLog());
     }
 
@@ -39,9 +33,9 @@ class QuestionsController extends Controller
     public function create()
     {
         //
-        $questions = new Question();
+        $question = new Question();
 
-        return view('questions.create', compact('questions'));
+        return view('questions.create', compact('question'));
     }
 
     /**
@@ -53,73 +47,81 @@ class QuestionsController extends Controller
     public function store(AskQuestionRequest $request)
     {
         //
+        // get the current unserialize
         $request->user()->questions()->create($request->only('title', 'body'));
 
-        // return redirect('/questions');
         return redirect()->route('questions.index')->with('success', "Your question has been submitted");
+
+        //alternative redirect
+        // return redirect('/questions');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Question  $question
+     * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
     public function show(Question $question)
     {
-        //$question->views = $question->views + 1;
-        $question->increment('views');
+      // long way of writing incrementing the views on a question
+      // $question->views = $question->views + 1;
+      // $question->save();
 
-        return view('questions.show', compact('question'));
-        
+      // short form for incrmenting the view
+      $question->increment('views');
+
+      return view('questions.show', compact('question'));
+
+        // dd($question->body);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Question  $question
+     * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
     public function edit(Question $question)
     {
-        //
-        if(Auth::user()->cannot('update', $question)){
-            return redirect()->route('questions.index');
+        // using the gate defined in AuthServiceProvider
+        if(\Gate::denies('update-question', $question)){
+          abort(403, "Access Denied");
         }
-        return view("questions.edit", compact('question'));
+        return view('questions.edit', compact('question'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Question  $question
+     * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
     public function update(AskQuestionRequest $request, Question $question)
     {
         //
-        if(Auth::user()->cannot('update', $question)){
-            abort(403, "Access denied for this user");
+        if(\Gate::denies('update-question', $question)){
+          abort(403, "Access Denied");
         }
         $question->update($request->only('title', 'body'));
 
-        return redirect()->route('questions.index')->with('success', 'Your question has been updated');
+        return redirect('/questions')->with('success', "Your question has been updated");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Question  $question
+     * @param  \App\Question  $question
      * @return \Illuminate\Http\Response
      */
     public function destroy(Question $question)
     {
-        
-        if(Auth::user()->cannot('delete', $question)){
-            abort(403, "Access denied for this user");
+        //
+        if(\Gate::denies('delete-question', $question)){
+          abort(403, "Access Denied");
         }
         $question->delete();
-        return redirect()->route('questions.index')->with('success', "Your question has been deleted");
+        return redirect('/questions')->with('success', "Your question has been deleted");
     }
 }

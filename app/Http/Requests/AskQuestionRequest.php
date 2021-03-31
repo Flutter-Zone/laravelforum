@@ -13,7 +13,7 @@ class AskQuestionRequest extends FormRequest
      */
     public function authorize()
     {
-        // return true to indicate that anyone can make this request
+      // return true if allowing anyone to post to the database
         return true;
     }
 
@@ -26,7 +26,7 @@ class AskQuestionRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255',
-            'body' => 'required'
+            'body' => 'required',
         ];
     }
 }

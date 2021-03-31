@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\QuestionsController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,8 +17,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('questions', QuestionsController::class)->except('show');
-
-Route::get('/questions/{slug}', [QuestionsController::class, 'show'])->name('questions.show');
+// creating route for the QuestionsController. Exclude a route using the except
+Route::resource('questions', 'QuestionsController')->except('show');
+Route::get('/questions/{slug}', 'QuestionsController@show')->name('questions.show');
